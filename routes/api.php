@@ -1,6 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EquipmentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +15,27 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+//Authentication routers
+Route::post('register', [AuthController::class, 'register']);
+
+Route::post('login', [AuthController::class, 'login']);
+
+Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+//Equipment routers
+Route::prefix('equipments')->group(function() {
+
+    Route::get('/', [EquipmentController::class, 'index']);
+
+    Route::get('/{id}', [EquipmentController::class, 'show']);
+
+    Route::middleware('auth:sanctum')->group(function() {
+        
+        Route::post('/', [EquipmentController::class, 'store']);
+
+        Route::put('/{id}', [EquipmentController::class, 'update']);
+
+        Route::delete('/{id}', [EquipmentController::class, 'destroy']);
+
+    });
 });
